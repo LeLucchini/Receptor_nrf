@@ -31,6 +31,7 @@
 
 motorH::motorH(void):_in1(H_IN1),_in2(H_IN2),_in3(H_IN3),_in4(H_IN4)
     ,_encoderEsq(ENC_ESQ_PIN),_encoderDir(ENC_DIR_PIN), sensor_ultrassom(HC_SR04_ECHO, HC_SR04_TRIGGER)
+
 {
     _in1.period(PWM_FREQ); // seta frequencia do pwm
     _in2 = 0;
