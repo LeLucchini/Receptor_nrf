@@ -2,7 +2,7 @@
 
 using namespace std::chrono;
 
-HC_SR04::HC_SR04(PinName echo, PinName trigger): interrupt_echo(echo), trigger_out(trigger), rdy(false) {
+HC_SR04::HC_SR04(PinName echo, PinName trigger): interrupt_echo(echo), trigger_out(trigger), rdy(false), distance(9999) {
     this->interrupt_echo.fall(callback(this, &HC_SR04::fall_event));
     this->interrupt_echo.rise(callback(this, &HC_SR04::rise_event));
 

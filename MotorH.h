@@ -2,6 +2,7 @@
 #define MOTORH_H
 
 #include "mbed.h"
+#include "HC_SR04.h"
 
 class motorH
 {
@@ -28,6 +29,7 @@ class motorH
         void countEsqIrq(void);
         void countDirIrq(void);
         void distIrq();
+        void evadeMove();
         int debouceCounter = 0;
         PwmOut _in1;
         DigitalOut _in2;
@@ -37,5 +39,6 @@ class motorH
         InterruptIn _encoderEsq;
         InterruptIn _encoderDir;
         Ticker _tout;
+        HC_SR04 sensor_ultrassom;
 };
 #endif
