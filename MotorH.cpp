@@ -12,15 +12,15 @@
 #define H_IN4 PTB11
 
 #define PWM_FREQ 0.01f //frequencia do pwn 1kHz
-#define velDir 0.00568f
-#define velEsq 0.0068f
+#define velDir 0.566f
+#define velEsq 0.68f
 
 #define ENC_ESQ_PIN PTA5 // encoders
 #define ENC_DIR_PIN PTA4
 
 
-#define LEFT_TURN_DISTANCE 10
-#define RIGHT_TURN_DISTANCE 10
+#define LEFT_TURN_DISTANCE 5
+#define RIGHT_TURN_DISTANCE 5
 
 
 motorH::motorH(void):_in1(H_IN1),_in2(H_IN2),_in3(H_IN3),_in4(H_IN4)
@@ -39,21 +39,28 @@ motorH::motorH(void):_in1(H_IN1),_in2(H_IN2),_in3(H_IN3),_in4(H_IN4)
 
 void motorH::moveForward(int dist)
 {
-    //_serial.write("\n\rmovendo para frente", 31);
-    serial->write("dentroFo", 8);
-    pulsoDir = 0;
-    while(pulsoDir < dist)
+    serial->write("\n\rmovendo para frente", 21);
+    pulsoEsq = 0;
+
+    char string_10[100];
+    sprintf(string_10, "dist: %d\r\n", dist); 
+    serial->write(string_10, strlen(string_10));
+
+
+    while(pulsoEsq < dist)
     {        
         moving = true;
 
         motorDir(1, velDir); 
         motorEsq(1, velEsq);
+
     }
     stop();
 }
+
 void motorH::moveBackwards(int dist)
 {
-    //_serial.write("\n\rmovendo para tras", 21);    
+    serial->write("\n\rmovendo para tras", 21);   
     pulsoDir = 0;
     while(pulsoDir < dist)
     {
@@ -84,14 +91,14 @@ void motorH::turnLeft(void)
 {
     stop();
     ThisThread::sleep_for(1s);
-    //_serial.write("\n\rvirar para esquerda", 5);
+    serial->write("\n\rvirar para esquerda", 20); 
     pulsoDir = 0;
     while(pulsoDir < LEFT_TURN_DISTANCE)
     {
         moving = true;
 
-        motorDir(1, velDir);
-        motorEsq(-1, velEsq);
+        motorDir(-1, velDir);
+        motorEsq(1, velEsq);
     }
     stop();
     ThisThread::sleep_for(1s);
@@ -101,14 +108,15 @@ void motorH::turnRight(void)
 {
     stop();
     ThisThread::sleep_for(1s);
-    //_serial.write("\n\rvirar para direita", 8);
-    pulsoDir = 0;
-    while(pulsoDir < RIGHT_TURN_DISTANCE)
+    
+    serial->write("\n\rvirar para direita", 22); 
+    pulsoEsq = 0;
+    while(pulsoEsq < RIGHT_TURN_DISTANCE)
     {
         moving = true;
 
-        motorDir(-1, velDir);
-        motorEsq(1, velEsq);
+        motorDir(1, velDir);
+        motorEsq(-1, velEsq);
     }
     stop();
     ThisThread::sleep_for(1s);
@@ -127,7 +135,7 @@ void motorH::motorDir(int command, float duty)
         _in2.write(0);
         break;
     case -1: // move backwards
-        _in1.write(duty);
+        _in1.write(0);
         _in2.write(0);
         break;
     case 2: // hard break
@@ -150,7 +158,7 @@ void motorH::motorEsq(int command, float duty)
         _in4.write(0);
         break;
     case -1: // move backwards
-        _in3.write(duty);
+        _in3.write(0);
         _in4.write(0);
         break;
     case 2: // hard break
@@ -181,11 +189,11 @@ void motorH::execute(char rxData[4])
     sprintf(string_10, "dist_x: %d\r\n", dist_x); 
     serial->write(string_10, strlen(string_10));
 
-    sprintf(string_10, "dist_y: %d", dist_y); 
+    sprintf(string_10, "dist_y: %d\r\n", dist_y); 
     serial->write(string_10, strlen(string_10));
 
     // frente esquerda
-    if (rxData[0] == 'f' && rxData[2] == 'd')
+    if (rxData[0] == 'f' && rxData[2] == 'e')
     {
         
         //_serial.write("\n\rcomando frente esquerda", 9);
@@ -193,21 +201,21 @@ void motorH::execute(char rxData[4])
         if (dist_y > 0) {turnLeft();moveForward(dist_y);}
     }
     // frente direita
-    if (rxData[0] == 'f' && rxData[2] == 't')
+    if (rxData[0] == 'f' && rxData[2] == 'd')
     {
         //_serial.write("\n\rcomando frente direita", 6);
         if (dist_x > 0) {moveForward(dist_x);}
         if (dist_y > 0) {turnRight();moveForward(dist_y);}
     }
     // trás esquerda
-    if (rxData[0] == 't' && rxData[2] == 'f')
+    if (rxData[0] == 't' && rxData[2] == 'e')
     {
         //_serial.write("\n\rcomando trás esquerda", 4);
         if (dist_x > 0) {moveBackwards(dist_x);}
         if (dist_y > 0) {turnLeft();moveForward(dist_y);}
     }
     // trás direita
-    if (rxData[0] == 't' && rxData[2] == 't')
+    if (rxData[0] == 't' && rxData[2] == 'd')
     {
         //_serial.write("\n\rcomando trás direita", 10);
         if (dist_x > 0) {moveBackwards(dist_x);}
