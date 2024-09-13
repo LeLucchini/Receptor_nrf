@@ -12,8 +12,8 @@
 #define H_IN4 PTB11
 
 #define PWM_FREQ 0.01f //frequencia do pwn 1kHz
-#define velDir 0.566f
-#define velEsq 0.68f
+#define velDir 0.283f //0.566f
+#define velEsq 0.34f//0.68f
 
 #define ENC_ESQ_PIN PTA5 // encoders
 #define ENC_DIR_PIN PTA4
@@ -57,9 +57,14 @@ void motorH::moveForward(int dist)
     while(pulsoEsq < dist)
     {        
         moving = true;
+        
+        sensor_ultrassom.update_event();
 
         motorDir(1, velDir); 
         motorEsq(1, velEsq);
+
+        sprintf(string_10, "Sensor: %d\r\n", (int)sensor_ultrassom.get_distance()); 
+        serial->write(string_10, strlen(string_10));
 
         if (sensor_ultrassom.get_distance() <= 10.0 && pulsoEsq > 0) {
             char msg[] = "\r\n Iniciando o movimento de desvio... \r\n";
@@ -69,7 +74,6 @@ void motorH::moveForward(int dist)
             pulsoEsq = temp_pulsos;
             // Fazer a correção do temp_pulsos para compensar o andado durante o desvio
         }
-
 
     }
     stop();
@@ -93,7 +97,7 @@ void motorH::stop(void)
     moving = false;
     motorDir(0, 0); // inicia os motores em ponto morto
     motorEsq(0, 0); // inicia os motores em ponto morto
-    serial->write("stop\r\n", 4);
+    //serial->write("stop\r\n", 4);
    
 }
 

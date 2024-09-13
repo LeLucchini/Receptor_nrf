@@ -6,7 +6,6 @@
 class HC_SR04 {
 private:
     Timer timer;
-    Ticker ticker;
     InterruptIn interrupt_echo;
     PwmOut trigger_out;
     float distance;
@@ -14,11 +13,12 @@ private:
     
     void rise_event();
     void fall_event();
-    void tick_event();
 
 public:
     HC_SR04(PinName echo, PinName trigger);
     float get_distance();
+    
+    void update_event();
 };
 
 

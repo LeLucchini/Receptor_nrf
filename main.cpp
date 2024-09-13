@@ -2,6 +2,8 @@
 #include "nRF24L01P.h"
 #include "MotorH.h"
 #include <string.h>
+#include "HC_SR04.h"
+#include <cstring>
 
 // Initialize BufferedSerial object for PC communication
 BufferedSerial pc(USBTX, USBRX); // USBTX and USBRX are default pins for serial communication
@@ -47,6 +49,9 @@ int main() {
     
     motor->serial = &pc;
     motor->stop(); // inicia com os motores parados
+    
+    HC_SR04 sensor_ultrassom(PTD1, PTA12);
+
 
     while (1) {
         // Check if data is available on the serial interface
@@ -63,10 +68,15 @@ int main() {
         //     }
         // }
 
+        //char string_10[100];
+        // sprintf(string_10, "Sensor: %d\r\n", (int)sensor_ultrassom.get_distance()); 
+        // pc.write(string_10, strlen(string_10));
+
         // Check if data is available in the nRF24L01+
         if (my_nrf24l01p.readable()) {
             rxDataCnt = my_nrf24l01p.read(NRF24L01P_PIPE_P0, rxData, sizeof(rxData));
             pc.write(rxData, rxDataCnt);
+
 
             motor->execute(rxData); // executa o comando recebido na mensagem
         }
