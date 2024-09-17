@@ -48,9 +48,9 @@ int main() {
 
     
     motor->serial = &pc;
-    motor->stop(); // inicia com os motores parados
+    //motor->stop(); // inicia com os motores parados
     
-    HC_SR04 sensor_ultrassom(PTD1, PTA12);
+   // HC_SR04 sensor_ultrassom(PTD1, PTA12);
 
 
     while (1) {
@@ -78,7 +78,7 @@ int main() {
             pc.write(rxData, rxDataCnt);
 
 
-            motor->execute(rxData); // executa o comando recebido na mensagem
+            //motor->execute(rxData); // executa o comando recebido na mensagem
         }
     }
 }

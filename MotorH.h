@@ -4,6 +4,8 @@
 #include "mbed.h"
 #include "HC_SR04.h"
 
+#define DISTANCE_DEBOUNCE_SIZE 15
+
 class motorH
 {
     public:
@@ -25,6 +27,12 @@ class motorH
         void debug(void);
         bool moving = false;
         BufferedSerial * serial;
+        
+        
+        int getDistance(void);
+        void bypass(void);
+        int DistanceDebounced;
+        bool checkObstacle(void);
     private:
         void countEsqIrq(void);
         void countDirIrq(void);
@@ -38,7 +46,12 @@ class motorH
         //BufferedSerial _serial;
         InterruptIn _encoderEsq;
         InterruptIn _encoderDir;
-        Ticker _tout;
+        Ticker tout;
         HC_SR04 sensor_ultrassom;
+
+        int minValue(int array[DISTANCE_DEBOUNCE_SIZE]);
+        int DistanceDebouncer[DISTANCE_DEBOUNCE_SIZE] = { 0 };
+        bool bypassing = false;
+        void distAt();
 };
 #endif
