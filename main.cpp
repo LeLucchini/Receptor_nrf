@@ -1,9 +1,12 @@
+#include "HC_SR04_2.h"
 #include "mbed.h"
 #include "nRF24L01P.h"
 #include "MotorH.h"
+#include <chrono>
 #include <string.h>
 #include "HC_SR04.h"
 #include <cstring>
+#include "MotorH_.h"
 
 // Initialize BufferedSerial object for PC communication
 BufferedSerial pc(USBTX, USBRX); // USBTX and USBRX are default pins for serial communication
@@ -12,12 +15,13 @@ BufferedSerial pc(USBTX, USBRX); // USBTX and USBRX are default pins for serial 
 nRF24L01P my_nrf24l01p(PTD2, PTD3, PTC5, PTD0, PTD5, PTA13);    // mosi, miso, sck, csn, ce, irq
 
 
-motorH *motor = new motorH(); // classe de controle do motor
+//motorH *motor = new motorH(); // classe de controle do motor
+MotorH *motor2 = new MotorH();
 
 int main() {
  
 
-    #define TRANSFER_SIZE 4
+    #define TRANSFER_SIZE 8
 
     char txData[TRANSFER_SIZE] = {0}, rxData[TRANSFER_SIZE] = {0};
     int txDataCnt = 0;
@@ -40,18 +44,19 @@ int main() {
     len = sprintf(buffer, "nRF24L01+ RX Address   : 0x%010llX\r\n", my_nrf24l01p.getRxAddress());
     pc.write(buffer, len);
 
-    pc.write("Type keys to test transfers:\r\n  (transfers are grouped into 4 characters)\r\n", 75);
+    pc.write("Type keys to test transfers:\r\n  (transfers are grouped into 8 characters)\r\n", 75);
 
     my_nrf24l01p.setTransferSize(TRANSFER_SIZE);
     my_nrf24l01p.setReceiveMode();
     my_nrf24l01p.enable();
 
     
-    motor->serial = &pc;
+    //motor->serial = &pc;
     //motor->stop(); // inicia com os motores parados
     
    // HC_SR04 sensor_ultrassom(PTD1, PTA12);
 
+    motor2->startBackgroundService();
 
     while (1) {
         // Check if data is available on the serial interface
@@ -76,9 +81,10 @@ int main() {
         if (my_nrf24l01p.readable()) {
             rxDataCnt = my_nrf24l01p.read(NRF24L01P_PIPE_P0, rxData, sizeof(rxData));
             pc.write(rxData, rxDataCnt);
-
-
-            //motor->execute(rxData); // executa o comando recebido na mensagem
+            motor2->execute(rxData); // executa o comando recebido na mensagem
         }
+
     }
+
+    
 }

@@ -18,7 +18,6 @@
 #define ENC_ESQ_PIN PTA5 // encoders
 #define ENC_DIR_PIN PTA4
 
-
 #define LEFT_TURN_DISTANCE 5
 #define RIGHT_TURN_DISTANCE 5
 
