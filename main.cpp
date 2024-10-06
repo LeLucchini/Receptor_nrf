@@ -61,7 +61,7 @@ int main() {
     while (1) {
         // Check if data is available on the serial interface
 
-        // if (pc.readable()) {
+        //if (pc.readable()) {
         //     char c;
         //     pc.read(&c, 1);
         //     txData[txDataCnt++] = c;

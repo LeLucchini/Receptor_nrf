@@ -24,6 +24,8 @@
 #define ENC_DIR_PIN PTA4
 
 #define DEBOUNCE_PERIOD 300 // em ms
+#define DEBOUNCE_FACTORA 1.0
+#define DEBOUNCE_FACTORB 1.05
 #define MIN_OBJECT_DIST 20
 
 #define MAX_STACK_SIZE 12

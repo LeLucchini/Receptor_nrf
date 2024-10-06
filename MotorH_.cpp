@@ -34,13 +34,13 @@ void MotorH::update() {
     int delta_time_left = duration_cast<milliseconds> (Kernel::Clock::now() - this->last_update_left_ms ).count();
     int delta_time_right = duration_cast<milliseconds> (Kernel::Clock::now() - this->last_update_right_ms).count();
 
-    if (this->update_left_count && delta_time_left >= DEBOUNCE_PERIOD) {
+    if (this->update_left_count && delta_time_left >= DEBOUNCE_PERIOD * DEBOUNCE_FACTORA) {
         this->last_update_left_ms = Kernel::Clock::now();
         update_left_count = false;
         this->left_count += 1;
     } else this->update_left_count = false;
 
-    if (this->update_right_count && delta_time_right >= DEBOUNCE_PERIOD) {
+    if (this->update_right_count && delta_time_right >= DEBOUNCE_PERIOD * DEBOUNCE_FACTORB) {
         this->last_update_right_ms = Kernel::Clock::now();
         update_right_count = false;
         this->right_count += 1;
